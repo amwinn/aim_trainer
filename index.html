@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div></div>
+    <canvas id="canvas1" width="1632" height="918"></canvas>
+    <style>
+        canvas{
+            background-color:lightgray;
+            border: solid dimgrey;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    
+</body>
+<script>
+
+    document.body.style.cursor = "crosshair";
+    let canvas = document.getElementById("canvas1");
+    let canvasContext = canvas.getContext("2d");
+
+    let circleX = canvas.width/2;
+    let circleY = canvas.height - 100;
+    let circleVelX = 1;
+    let circleVelY = -1;
+    let circleBounds = 35;
+
+    let circle2X = 250;
+    let circle2Y = 350;
+    let circle2Bounds = 35;
+    let circle2VelX = 1.5;
+    let circle2VelY= -1.5;
+
+
+    let circleA2X = 300;
+    let circleA2Y = 200;
+    let circleA2Bounds = 35;
+    let circleA2VelX = -1.75;
+    let circleA2VelY = 1.75;
+
+    let circleA3X = 200;
+    let circleA3Y = 300;
+    let circleA3Bounds = 35;
+    let circleA3VelX = 2;
+    let circleA3VelY = 2;
+
+
+
+    let blockX = canvas.width/2;
+    let blockY = canvas.height-500;
+    let blockWidth = 50;
+    let blockHeight = 350;
+    let blockVelX = -2.5;
+    let blockVelY = 2.5;
+
+    let score = 0;
+
+    function winCondition() {
+        if(circleBounds == 20 && circle2Bounds == 20 && circleA2Bounds == 20 && circleA3Bounds == 20) {
+            document.location.reload();
+            alert("You Failed"); //MUST GO BEFORE ALERT, ELSE STUCK IN LOOP OF CURRENT STATUS
+            //clearInterval(interval); only needed if using interval instead of req. ani frame
+        }
+        if(score == 50) {
+            document.location.reload(); //MUST GO BEFORE ALERT, ELSE STUCK IN LOOP OF CURRENT STATUS
+            alert("You Survived");
+            //clearInterval(interval); only needed if using interbal instead of req. ani frame
+        }
+    }
+
+
+    document.addEventListener("click", mouseClickHandler);
+
+    function mouseClickHandler(e) {
+
+        let pointerBounds = 5;
+        let mouseX = e.clientX -canvas.offsetLeft-3;
+        let mouseY = e.clientY-10;
+        canvasContext.beginPath();
+        canvasContext.arc(mouseX, mouseY, pointerBounds, 0, Math.PI*2);
+        canvasContext.fillStyle = 'white'; //only seems to show up with interval not req. ani frame
+        canvasContext.fill();
+        canvasContext.closePath();
+        //CIRCLE 
+        let xd = mouseX - circleX;
+        let xy = mouseY - circleY;
+        let d = Math.sqrt(xd * xd + xy * xy);
+        if(d < circleBounds + pointerBounds) {
+            if(circleBounds < 35) {
+                circleBounds =35;
+                score++;
+            }
+        }
+
+        let circle2xd = mouseX - circle2X;
+        let circle2yd = mouseY - circle2Y;
+        let circle2d = Math.sqrt(circle2xd*circle2xd + circle2yd *circle2yd);
+        if(circle2d < circle2Bounds + pointerBounds) {
+            if(circle2Bounds < 35) {
+                circle2Bounds = 35;
+                score++;
+            }
+        }
+
+        //CIRCLE A2
+        let a2xd = mouseX - circleA2X;
+        let a2yd = mouseY - circleA2Y;
+        let a2d = Math.sqrt(a2xd * a2xd + a2yd * a2yd);
+        if(a2d < circleA2Bounds + pointerBounds){
+            if(circleA2Bounds < 35) {
+                circleA2Bounds = 35;
+                score++;
+            }
+        }
+        //CIRCLE A3
+        let a3xd = mouseX - circleA3X;
+        let a3yd = mouseY - circleA3Y;
+        let a3d = Math.sqrt(a3xd * a3xd + a3yd * a3yd);
+        if(a3d < circleA3Bounds+pointerBounds){
+            if(circleA3Bounds < 35){
+                circleA3Bounds = 35;
+                score++; 
+            }
+        }
+
+    }
+
+
+
+    function drawCircle() {
+        canvasContext.beginPath();
+        canvasContext.arc(circleX, circleY, circleBounds, 0, Math.PI*2);  //IMPORTANT, IT APPEARS YOU MUST USE CAPITAL LETTERS FOR THE PI IN MATH.PI, OR ELSE IT WILL NOT RENDER THE ARC
+        canvasContext.fillStyle = "deepskyblue";
+        canvasContext.fill();
+        canvasContext.closePath();
+    
+    }
+
+    function drawCircle2() {
+        canvasContext.beginPath();
+        canvasContext.arc(circle2X,circle2Y, circle2Bounds, 0, Math.PI*2);
+        canvasContext.fillStyle = "deepskyblue";
+        canvasContext.fill();
+        canvasContext.closePath();
+    }
+
+    function drawCircleA2() {
+        canvasContext.beginPath();
+        canvasContext.arc(circleA2X, circleA2Y, circleA2Bounds, 0, Math.PI*2);
+        canvasContext.fillStyle = "deepskyblue";
+        canvasContext.fill();
+        canvasContext.closePath();
+    }
+
+    function drawCircleA3() {
+        canvasContext.beginPath();
+        canvasContext.arc(circleA3X, circleA3Y, circleA3Bounds, 0, Math.PI*2);
+        canvasContext.fillStyle= "deepskyblue";
+        canvasContext.fill();
+        canvasContext.closePath();
+    }
+
+    function drawBlock() {
+        canvasContext.beginPath();
+        canvasContext.rect(blockX, blockY, blockWidth, blockHeight);
+        canvasContext.fillStyle = "dimgrey";
+        canvasContext.fill();
+        canvasContext.closePath();
+    }
+
+    function drawScoreText() {
+        canvasContext.font = "20px Times New Roman";
+        canvasContext.fillStyle = "black";
+        canvasContext.fillText("Points: " + score, 20, 30);
+
+    }
+
+
+
+    function draw() {
+        canvasContext.clearRect(0,0,canvas.width,canvas.height);
+        
+        winCondition();
+        drawCircle();
+        drawCircleA2();
+        drawCircleA3();
+        drawCircle2();
+        drawBlock();
+        drawScoreText();
+
+
+        
+
+        //TO DO:
+        //add lose scenario (if all 3 blue balls have radii of 15)
+
+        
+
+        
+
+
+
+        if (circleX > canvas.width-circleBounds || circleX < circleBounds) {
+            circleVelX = -circleVelX;
+            if(circleBounds > 30) {
+                circleBounds = 20;
+            }
+            
+            
+        }
+
+        if (circleY > canvas.height-circleBounds || circleY < circleBounds) {
+            circleVelY = -circleVelY;
+            if(circleBounds > 30) {
+                circleBounds = 20;
+            }
+            
+        }
+        /////////////////////////////////////////
+
+        if(circle2X > canvas.width-(circle2Bounds+3) || circle2X < circle2Bounds+6) {
+            circle2VelX = -circle2VelX;
+            if(circle2Bounds > 30) {
+                circle2Bounds = 20;
+            }
+            
+        }
+        if(circle2Y > canvas.height-circle2Bounds || circle2Y < circle2Bounds) {
+            circle2VelY = -circle2VelY;
+            if(circle2Bounds > 30) {
+                circle2Bounds = 20;
+            }
+            
+        }
+
+        //////////////////////////////////////////
+        if(circleA2X > canvas.width-circleA2Bounds || circleA2X < circleA2Bounds+5){
+            circleA2VelX = -circleA2VelX;
+            if(circleA2Bounds > 30) {
+                circleA2Bounds = 20;
+            }
+        }
+        if(circleA2Y > canvas.height-circleA2Bounds || circleA2Y <circleA2Bounds) {
+            circleA2VelY = -circleA2VelY;
+            if(circleA2Bounds > 30) {
+                circleA2Bounds = 20;
+            }
+        }
+        //////////////////////////////////////////
+        if(circleA3X > canvas.width-circleA3Bounds || circleA3X < circleA3Bounds+5){
+            circleA3VelX =-circleA3VelX;
+            if(circleA3Bounds > 30) {
+                circleA3Bounds = 20;
+            }
+        }
+        if(circleA3Y > canvas.height-circleA3Bounds || circleA3Y < circleA3Bounds) {
+            circleA3VelY =-circleA3VelY;
+            if(circleA3Bounds > 30) {
+                circleA3Bounds = 20;
+            }
+        }
+        /////////////////////////////////////////
+
+        if (blockX + blockWidth > canvas.width-5 || blockX < canvas.width - canvas.width) {
+            blockVelX = -blockVelX;
+        }
+
+        if (blockY + blockHeight > canvas.height +5 || blockY < canvas.height - canvas.height) {
+            blockVelY = -blockVelY;
+        }
+
+        if (circleX > blockX && circleX < blockX + blockWidth && circleY > blockY && circleY < blockY+blockHeight) {
+            circleVelX = -circleVelX;
+            circleVelY = -circleVelY;
+            blockVelX = -blockVelX;
+            blockVelY = -blockVelY;
+            if(circleBounds >30) {
+                circleBounds = 20;
+                //circleBounds+=1; ENABLE IF 720P CANVAS
+                //below is the old collision code that was used for block & all circles
+                //(blockX + blockWidth> circleX && blockX < circleX + circleBounds && blockY + blockHeight> circleY && blockY < circleY +circleBounds)
+            }
+        }
+        if(circle2X > blockX && circle2X < blockX+blockWidth && circle2Y > blockY && circle2Y < blockY+blockHeight) {
+            circle2VelX = -circle2VelX;
+            circle2VelY = -circle2VelY;
+            blockVelX = -blockVelX;
+            blockVelY = -blockVelY;
+            if(circle2Bounds > 30) {
+                circle2Bounds = 20;
+            }
+            //if(circle2Bounds < 50 && circle2X < canvas.width-circle2Bounds && circle2X > circle2Bounds) {
+            //    circle2Bounds += 5;
+           // }
+        }
+        if(circleA2X > blockX && circleA2X < blockX+blockWidth && circleA2Y > blockY && circleA2Y < blockY+blockHeight) {
+            blockVelX = -blockVelX;
+            blockVelY = -blockVelY;
+            circleA2VelX = -circleA2VelX;
+            circleA2VelY = -circleA2VelY;
+            if(circleA2Bounds >30) {
+                circleA2Bounds = 20;
+                //circleA2Bounds+=1; ENABLE IF 720P CANVAS
+            }
+        }
+        if(circleA3X > blockX && circleA3X < blockX+blockWidth && circleA3Y > blockY && circleA3Y < blockY+blockHeight) {
+            blockVelX =-blockVelX;
+            blockVelY =-blockVelY;
+            circleA3VelX =-circleA3VelX;
+            circleA3VelY =-circleA3VelY;
+            if(circleA3Bounds >30) {
+                circleA3Bounds = 20;
+                //circleA3Bounds+=1; ENABLE IF 720P CANVAS
+            }
+        }
+        /////////////////////////////////////////////////////
+
+        //// SQUARE ROOT FORMULA FOR COLLISION B/W CIRCLES
+        let xdistance = circleX - circle2X;
+        let ydistance = circleY - circle2Y;
+        let distance = Math.sqrt(xdistance * xdistance + ydistance * ydistance);
+        if(distance < circleBounds + circle2Bounds) {
+            circleVelX = -circleVelX;
+            circle2VelX = -circle2VelX;
+            ///RANDOM STATEMENT TO SHRINK THE BALL
+            //if(circleBounds > 15) {
+            //    circleBounds = circleBounds-.5;
+            //}
+            //if(circle2Bounds < 40) {
+            //   circle2Bounds +=5;
+            //}
+
+        }
+
+        //// END OF FORMULA & IF STATEMENT
+        ///////////////////////////////////////////////
+        let A2A3Xdistance = circleA2X - circleA3X;
+        let A2A3Ydistance = circleA2Y - circleA3Y;
+        let A2A3distance = Math.sqrt(A2A3Xdistance * A2A3Xdistance + A2A3Ydistance * A2A3Ydistance);
+        if(A2A3distance < circleA2Bounds + circleA3Bounds) {
+            circleA2VelX = -circleA2VelX;
+            circleA3VelX = -circleA3VelX;
+        }
+        
+        let A22Xdistance = circleA2X - circle2X;
+        let A22Ydistance = circleA2Y - circle2Y;
+        let A22distance = Math.sqrt(A22Xdistance * A22Xdistance + A22Ydistance * A22Ydistance);
+        if(A22distance < circleA2Bounds + circle2Bounds) {
+            circleA2VelX = -circleA2VelX;
+            circle2VelX = - circle2VelX;
+        //    if(circleA2Bounds > 15) {
+        //        circleA2Bounds-=.5;
+        //    }
+        //    if(circle2Bounds < 40) {
+        //        circle2Bounds +=5;
+        //    }
+        }
+        
+        let A2Xdistance = circleA2X - circleX;
+        let A2Ydistance = circleA2Y - circleY;
+        let A2distance = Math.sqrt(A2Xdistance * A2Xdistance + A2Ydistance * A2Ydistance);
+        if(A2distance < circleA2Bounds + circleBounds) {
+            circleA2VelX = -circleA2VelX;
+            circleVelX = -circleVelX;
+            
+        }
+        ///////////////////////////////////////////////
+        let A32Xdistance = circleA3X - circle2X;
+        let A32Ydistance = circleA3Y - circle2Y;
+        let A32distance = Math.sqrt(A32Xdistance * A32Xdistance + A32Ydistance * A32Ydistance);
+        if(A32distance < circleA3Bounds + circle2Bounds) {
+            circleA3VelX = -circleA3VelX;
+            circle2VelX = -circle2VelX;
+        //    if(circleA3Bounds > 15) {
+        //        circleA3Bounds -=.5;
+        //    }
+        //    if(circle2Bounds < 40) {
+        //        circle2Bounds += 5;
+        //   }
+        }
+
+        let A3Xdistance = circleA3X - circleX;
+        let A3Ydistance = circleA3Y - circleY;
+        let A3distance = Math.sqrt(A3Xdistance *A3Xdistance + A3Ydistance*A3Ydistance);
+        if(A3distance < circleA3Bounds + circleBounds) {
+            circleA3VelX = -circleA3VelX;
+            circleVelX = -circleVelX;
+            
+        }
+        ///////////////////////////////////////////////
+
+        
+        circleX += circleVelX;
+        circleY += circleVelY;
+        circle2X += circle2VelX; //MUST BE BELOW THE IF STATEMENT THAT CHANGES DIRECTION
+        circle2Y += circle2VelY; //MUST BE  BELOW THE IF STATEMENT THAT CHANGES DIRECTION
+        circleA2X += circleA2VelX;
+        circleA2Y += circleA2VelY;
+        circleA3X += circleA3VelX;
+        circleA3Y += circleA3VelY;
+        blockX += blockVelX;
+        blockY += blockVelY;
+        
+        
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+    //interval = setInterval(draw, 10);
+  
+</script>
+</html>
